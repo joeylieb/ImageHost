@@ -5,6 +5,7 @@ const authMid = require("../middleware/authCheck");
 const {getServiceClient} = require("../util/blobService");
 const {generateRandomID, extractFileType} = require("../util/file");
 const uploadModel = require("../schema/upload");
+require("dotenv").config();
 
 router.post("/image", uploadMid, authMid, async (req, res, next) => {
    const fileData = req.file
@@ -34,7 +35,7 @@ router.post("/image", uploadMid, authMid, async (req, res, next) => {
       fileName
    });
 
-   return res.status(200).json({d: {url: `http://localhost:3001/${fileName}`}});
+   return res.status(200).json({d: {url: `${process.env.URL}/${fileName}`}});
 });
 
 module.exports = router;

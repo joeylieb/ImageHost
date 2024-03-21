@@ -26,4 +26,8 @@ router.get("/:filename", async (req, res, next) => {
     }
 });
 
+router.get("/", (req, res) => {
+   return res.send("israel.ps CDN")
+});
+
 module.exports = router;
