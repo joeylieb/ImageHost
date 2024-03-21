@@ -22,6 +22,7 @@ router.get("/:filename", async (req, res, next) => {
 
         downloadResponse.readableStreamBody.pipe(res);
     } catch (e) {
+        console.error(e);
         return res.sendStatus(500);
     }
 });

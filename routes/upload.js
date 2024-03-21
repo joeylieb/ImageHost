@@ -8,6 +8,7 @@ const uploadModel = require("../schema/upload");
 require("dotenv").config();
 
 router.post("/image", uploadMid, authMid, async (req, res, next) => {
+   console.log("ran")
    const fileData = req.file
    const fileID = generateRandomID(6)
    const fileName = `${fileID}.${extractFileType(fileData.originalname)}`;
