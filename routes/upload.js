@@ -39,4 +39,8 @@ router.post("/image", uploadMid, authMid, async (req, res, next) => {
    return res.status(200).json({d: {url: `${process.env.URL}/${fileName}`}});
 });
 
+router.get("/image", (req, res) => {
+   return res.sendStatus(400).send("Method not Allowed")
+})
+
 module.exports = router;
