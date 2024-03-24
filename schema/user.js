@@ -5,7 +5,13 @@ const user = new Schema({
     id: String,
     username: String,
     apiKey: String,
-    uploads: Number
+    uploads: Number,
+    selectedDomain: String,
+    embedData: {
+        title: String,
+        description: String,
+        color: String
+    }
 });
 
 const userModel = mongoose.model("user", user);

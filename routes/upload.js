@@ -5,6 +5,7 @@ const authMid = require("../middleware/authCheck");
 const {getServiceClient} = require("../util/blobService");
 const {generateRandomID, extractFileType} = require("../util/file");
 const uploadModel = require("../schema/upload");
+const userModel = require("../schema/user");
 require("dotenv").config();
 
 router.post("/image", uploadMid, authMid, async (req, res, next) => {
@@ -35,6 +36,8 @@ router.post("/image", uploadMid, authMid, async (req, res, next) => {
       fileType: "images",
       fileName
    });
+
+   await userModel.updateOne({id: req.user.id}, {$inc: {"uploads": 1}})
 
    return res.status(200).json({d: {url: `${process.env.URL}/${fileName}`}});
 });
