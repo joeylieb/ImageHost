@@ -8,6 +8,7 @@ const uploadModel = require("../schema/upload");
 const userModel = require("../schema/user");
 require("dotenv").config();
 
+
 router.post("/image", uploadMid, authMid, async (req, res, next) => {
    console.log("ran")
    const fileData = req.file
@@ -38,8 +39,8 @@ router.post("/image", uploadMid, authMid, async (req, res, next) => {
    });
 
    await userModel.updateOne({id: req.user.id}, {$inc: {"uploads": 1}})
-
-   return res.status(200).json({d: {url: `${process.env.URL}/${fileName}`}});
+   
+   return res.status(200).json({d: {url: `https://${req.user.selectedDomain.length > 1 ? req.user.selectedDomain : "cdn.israel.ps"}/${fileName}`}});
 });
 
 router.get("/image", (req, res) => {
