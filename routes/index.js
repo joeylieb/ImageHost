@@ -28,7 +28,7 @@ router.get("/:filename", async (req, res, next) => {
 });
 
 router.get("/", (req, res) => {
-   return res.send("israel.ps CDN")
+   return res.send("This domain is being used for Joey585's image host located <a href='https://image.minelink.xyz'>here</a>")
 });
 
 module.exports = router;
