@@ -1,10 +1,14 @@
 const express = require('express');
 const router = express.Router();
+
 const authCheck = require("../middleware/authCheck");
+
 const domainModel = require("../schema/domain");
 const userModel = require("../schema/user");
-const isAdmin = require("../util/isKeyAdmin");
 const uploadModel = require("../schema/upload");
+
+const isAdmin = require("../util/isKeyAdmin");
+const {generateShareXConfig} = require("../util/sharexConfig");
 
 /* GET users listing. */
 router.get('/@me', authCheck, function(req, res, next) {
@@ -47,6 +51,14 @@ router.get("/@me/uploads/get/:amount", authCheck, async (req, res) => {
     }
 
     return res.status(500).json({status: 500, error: "Internal Server Error"})
+});
+
+router.get("/@me/generate/sharex", authCheck, async (req, res) => {
+    const jsonConfig = generateShareXConfig(req.user);
+
+    if(jsonConfig.error) return res.status(500).json({status: 500, error: "Internal Server Error"});
+
+    return res.status(200).json({status: 200, d: jsonConfig});
 });
 
 module.exports = router;

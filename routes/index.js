@@ -18,7 +18,8 @@ router.get("/:filename", async (req, res, next) => {
         const blobClient = containerClient.getBlobClient(uploadData.fileName);
         const downloadResponse = await blobClient.download();
 
-        res.set({"Content-Type": `${singularize(uploadData.fileType)}/${uploadData.fileExtension}`});
+        res.set({
+            "Content-Type": `${singularize(uploadData.fileType)}/${uploadData.fileExtension}`});
 
         downloadResponse.readableStreamBody.pipe(res);
     } catch (e) {
