@@ -40,7 +40,7 @@ router.post("/image", uploadMid, authMid, async (req, res, next) => {
 
    await userModel.updateOne({id: req.user.id}, {$inc: {"uploads": 1}})
 
-   return res.status(200).json({d: {url: `https://${req.user.selectedDomain.length > 1 ? req.user.selectedDomain : "cdn.israel.ps"}/${fileName}`}});
+   return res.status(200).json({d: {url: `https://${req.user.selectedDomain.length > 1 ? req.user.selectedDomain : "cdn.israel.ps"}/${fileName}`, deleteURL: `https://cdn.israel.ps/${fileName}/delete`}});
 });
 
 router.get("/image", (req, res) => {

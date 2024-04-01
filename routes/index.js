@@ -3,6 +3,7 @@ const router = express.Router();
 const uploadModel = require("../schema/upload");
 const {getServiceClient} = require("../util/blobService");
 const {singularize} = require("../util/file");
+const authCheck = require("../middleware/authCheck");
 
 router.get("/:filename", async (req, res, next) => {
     try {
@@ -26,6 +27,25 @@ router.get("/:filename", async (req, res, next) => {
         console.error(e);
         return res.sendStatus(500);
     }
+});
+
+router.delete("/:filename/delete", authCheck, async (req, res) => {
+    if(!req.params.filename) {
+        return res.status(400).json({status: 400, error: "You need to include a file ID"});
+    }
+
+    const uploadData = await uploadModel.findOne({fileName: req.params.filename});
+    if(!uploadData) return res.status(404).json({status: 404, error: "File not found"});
+
+    const containerClient = getServiceClient().getContainerClient(uploadData.fileType);
+    const blobClient = containerClient.getBlobClient(uploadData.fileName);
+    const downloadResponse = await blobClient.delete();
+
+    if(downloadResponse.errorCode) return res.status(500).json({status: 500, error: "Internal server error"});
+
+    await uploadModel.deleteOne({fileName: req.params.filename});
+
+    return res.status(200).json({status: 200, d: {success: true}})
 });
 
 router.get("/", (req, res) => {

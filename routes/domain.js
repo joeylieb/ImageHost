@@ -17,9 +17,6 @@ router.get("/list/all", async (req, res) => {
 
 router.post("/create/new", authMid, async (req, res) => {
     if(!isAdmin(req.user.apiKey)) return res.status(401).json({status: 401, error: "Not Authenticated"});
-
-    console.log(req.body)
-
     if(!req.body.name || !req.body.createdBy) return res.status(400).json({status: 400, error: "Bad Request"})
 
     try {

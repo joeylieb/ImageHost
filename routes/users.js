@@ -24,7 +24,6 @@ router.post("/@me/domain/edit", authCheck, async (req, res) => {
 
     if(!domainResult) return res.status(401).json({status: 401, error: "Domain does not exist"});
     const updateQ = await userModel.updateOne({id: req.user.id}, {$set: {"selectedDomain": newDomain}});
-    console.log(updateQ)
     if(updateQ){
         return res.status(200).json({status: 200, d: {success: true}});
     }
@@ -43,8 +42,16 @@ router.get("/@me/uploads/get/:amount", authCheck, async (req, res) => {
     if(!req.params.amount) return res.status(400).json({status: 400, error: "Bad request, must include amount"});
     if(!parseInt(req.params.amount)) return res.status(400).json({status: 400, error: "Amount is not a number"});
     if(req.params.amount > 100) return res.status(400).json({status: 400, error: "Too big of a fetch"});
-    console.log({username: req.user.username})
-    const images = await uploadModel.find({userUploaded: req.user.username}).sort({dateCreated: 'descending'}).limit(req.params.amount);
+
+    let images;
+
+
+    if(req.query.from){
+        images = await uploadModel.find({userUploaded: req.user.username, dateCreated: {"$lt": req.query.from}}).sort({dateCreated: 'descending'}).limit(req.params.amount);
+    } else {
+        images = await uploadModel.find({userUploaded: req.user.username}).sort({dateCreated: 'descending'}).limit(req.params.amount);
+    }
+
 
     if(images){
         return res.status(200).json({status: 200, d: images});
