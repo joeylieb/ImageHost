@@ -10,7 +10,6 @@ require("dotenv").config();
 
 
 router.post("/image", uploadMid, authMid, async (req, res, next) => {
-   console.log("ran")
    const fileData = req.file
    const fileID = generateRandomID(6)
    const fileName = `${fileID}.${extractFileType(fileData.originalname)}`;
@@ -33,7 +32,10 @@ router.post("/image", uploadMid, authMid, async (req, res, next) => {
       fileExtension: extractFileType(fileData.originalname),
       id: fileID,
       dateCreated: Math.round(Date.now() / 1000),
-      userUploaded: req.user.username,
+      userUploaded: {
+         id: req.user.id,
+         username: req.user.username
+      },
       fileType: "images",
       fileName
    });
@@ -44,7 +46,31 @@ router.post("/image", uploadMid, authMid, async (req, res, next) => {
 });
 
 router.get("/image", (req, res) => {
-   return res.sendStatus(400).send("Method not Allowed")
+   return res.status(400).json("Method not Allowed")
+})
+
+router.get("/image/data", async (req, res) => {
+   if (!req.query.fileName) return res.status(400).json({status: 400, error: "Must provide file name"});
+   const uploadedImage = await uploadModel.findOne({fileName: req.query.fileName});
+   
+   if(!uploadedImage.userUploaded.id) return res.status(500).json({status: 500, error: "Could not find user/file"});
+
+   const userData = await userModel.findOne({id: uploadedImage.userUploaded.id});
+   if(!userData) return res.status(404).json({status: 404, error: "Could not find user"});
+
+   let imageData = {
+      embedData: {
+         title: "My Uploaded Image",
+         description: "I uploaded this with Joey's image host",
+         color: "#0b8bdb"
+      },
+      user: userData.username,
+      timeCreated: uploadedImage.dateCreated
+   }
+
+   if(userData.embedData) imageData.embedData = userData.embedData;
+
+   return res.status(200).json({status: 200, d: imageData});
 })
 
 module.exports = router;

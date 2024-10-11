@@ -3,3 +3,4 @@
 package-lock.json
 .idea
 config.json
+pnpm-lock.yaml

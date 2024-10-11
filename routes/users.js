@@ -47,9 +47,9 @@ router.get("/@me/uploads/get/:amount", authCheck, async (req, res) => {
 
 
     if(req.query.from){
-        images = await uploadModel.find({userUploaded: req.user.username, dateCreated: {"$lt": req.query.from}}).sort({dateCreated: 'descending'}).limit(req.params.amount);
+        images = await uploadModel.find({"userUploaded.username": req.user.username, dateCreated: {"$lt": req.query.from}}).sort({dateCreated: 'descending'}).limit(req.params.amount);
     } else {
-        images = await uploadModel.find({userUploaded: req.user.username}).sort({dateCreated: 'descending'}).limit(req.params.amount);
+        images = await uploadModel.find({"userUploaded.username": req.user.username}).sort({dateCreated: 'descending'}).limit(req.params.amount);
     }
 
 
@@ -67,5 +67,6 @@ router.get("/@me/generate/sharex", authCheck, async (req, res) => {
 
     return res.status(200).json({status: 200, d: jsonConfig});
 });
+
 
 module.exports = router;

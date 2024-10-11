@@ -5,7 +5,10 @@ const upload = new Schema({
     fileExtension: String,
     id: String,
     dateCreated: String,
-    userUploaded: String,
+    userUploaded: {
+        id: String,
+        username: String
+    },
     fileName: String,
     fileType: String
 });
