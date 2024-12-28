@@ -14,6 +14,8 @@ const indexRouter = require("./routes/index");
 const authRouter = require("./routes/auth");
 const domainRouter = require("./routes/domain");
 
+console.log(domainRouter)
+
 const app = express();
 
 app.use(cors());

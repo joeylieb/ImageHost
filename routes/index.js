@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const uploadModel = require("../schema/upload");
+const userModel = require("../schema/user");
 const {getServiceClient} = require("../util/blobService");
 const {singularize} = require("../util/file");
 const authCheck = require("../middleware/authCheck");
@@ -44,6 +45,7 @@ router.delete("/:filename/delete", authCheck, async (req, res) => {
     if(downloadResponse.errorCode) return res.status(500).json({status: 500, error: "Internal server error"});
 
     await uploadModel.deleteOne({fileName: req.params.filename});
+    await userModel.updateOne({id: req.user.id}, {$inc: {uploads: -1}});
 
     return res.status(200).json({status: 200, d: {success: true}})
 });
